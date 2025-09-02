@@ -1,0 +1,22 @@
+# Web framework
+fastapi
+uvicorn[standard]
+
+# Data handling
+pydantic
+python-multipart
+
+# Deep learning / Vision
+torch
+torchvision
+ultralytics  # YOLOv8
+
+# Image processing
+pillow
+opencv-python
+
+# AI APIs
+openai
+
+# Utilities
+numpy
