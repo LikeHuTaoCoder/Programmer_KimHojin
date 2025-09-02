@@ -1,4 +1,4 @@
-# ProjectA - AR Picture Book Server API
+# AR Picture Book Server API
 
 **English**  
 This project provides the **server-side API** for the AR Picture Book application.  
@@ -124,6 +124,40 @@ Creates a sentence based on given character and action.
   - `level` (int) - Sentence difficulty level  
 - **Response (JSON):**
   - `sentence` (String) - Generated sentence
+
+---
+
+## Model Retraining / モデル再学習
+
+**English**  
+The illustration style of picture books reduces the performance of YOLO models pre-trained on photographic datasets.  
+To address this, **AdaIN (Adaptive Instance Normalization)** style transfer was applied to convert real images into picture-book-like styles (used during retraining, see **Figure 1**).  
+
+- By applying the statistics (mean & std) of picture book illustrations to original images, we generated large amounts of style-transferred data.  
+- These augmented images were used to **retrain YOLOv8** for the picture book domain.  
+- **Results (Figure 2):** On a test set of 73,361 objects, the retrained model improved detection accuracy by **+21.6%p** compared to the baseline.  
+- This demonstrates that **domain-specific data augmentation** significantly improves recognition accuracy in picture books.  
+
+---
+
+## Figures / 図
+
+- **Figure 1. System Architecture with Style Transfer / スタイル転写を含むシステム構成**  
+  ![System Architecture](./docs/images/system_architecture.png)  
+
+- **Figure 2. Retraining Results (Baseline vs. Custom YOLOv8) / 再学習結果（ベースライン vs. カスタムYOLOv8）**  
+  ![Retraining Results](./docs/images/retraining_results.png)  
+
+---
+
+**日本語**  
+絵本のイラストスタイルは、実写写真ベースの事前学習モデル(YOLO)の性能を低下させます。  
+この課題に対処するために、**AdaIN (Adaptive Instance Normalization)** を用いて実写画像を絵本風に変換しました（再学習に使用、**図1**参照）。  
+
+- 絵本の統計量（平均・標準偏差）を適用し、多数のスタイル転写画像を生成  
+- これを用いて **YOLOv8 を絵本ドメイン向けに再学習**  
+- **結果（図2）:** テストセット 73,361オブジェクトで、事前学習モデル比 **検出精度が21.6%p向上**  
+- これは、**ドメイン特化データ拡張**が絵本における物体認識精度改善に有効であることを示しています。  
 
 ---
 
