@@ -1,5 +1,14 @@
 # Maritorch (Mario Kart AI with PyTorch)
 
+## Demo Video / デモ動画
+[![Watch the video](https://img.youtube.com/vi/2Q06KALGKx4/0.jpg)](https://youtu.be/2Q06KALGKx4)
+
+**English**  
+Click the thumbnail to watch the demo of Maritorch in action.  
+
+**日本語**  
+サムネイルをクリックすると、Maritorch の動作デモをご覧いただけます。  
+
 **English**  
 This project is a reproduction and improvement of **MariFlow**, an AI agent that automatically plays *Super Mario Kart*.  
 The original implementation was based on TensorFlow, but it has been reimplemented in **PyTorch** for better flexibility, maintainability, and compatibility.  
