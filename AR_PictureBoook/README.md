@@ -21,6 +21,9 @@ Originally developed as a graduation research project, it focuses on accessibili
 - LightBuzz Hand Tracking  
 - OpenAI API (TTS, story/quiz generation)  
 
+## Notes
+Parts of this README were drafted with the assistance of OpenAI's ChatGPT to improve clarity and bilingual (English/Japanese) documentation.
+
 ---
 
 **日本語**  
@@ -42,4 +45,20 @@ Originally developed as a graduation research project, it focuses on accessibili
 - FastAPI (Python)  
 - YOLOv8 (Ultralytics)  
 - LightBuzz Hand Tracking  
-- OpenAI API (TTS・ストーリー/クイズ生成)  
+- OpenAI API (TTS・ストーリー/クイズ生成)
+
+## 備考
+本READMEの一部は、説明の明確化および日英二言語対応のために OpenAI の ChatGPT を利用して作成しました。
+
+## Trademark Notice
+Unity is a trademark of Unity Technologies.  
+PyTorch is a trademark of Meta AI.  
+YOLOv8 is developed and maintained by Ultralytics.  
+OpenAI is a trademark of OpenAI.  
+Other names or brands may be claimed as the property of others.  
+
+Unity は Unity Technologies の商標です。  
+PyTorch は Meta AI の商標です。  
+YOLOv8 は Ultralytics によって開発・管理されています。  
+OpenAI は OpenAI の商標です。  
+その他の名称やブランドは、各社が所有する場合があります。  
