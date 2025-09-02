@@ -1,64 +1,152 @@
-# ProjectA - AR Picture Book Application
+# ProjectA - AR Picture Book Server API
 
 **English**  
-This project is an **AR picture book application** designed to support children’s reading immersion.  
-By combining **Unity** with **FastAPI**, **YOLOv8**, and **OpenAI API**, the system recognizes book pages and overlays interactive 3D content.  
-It also provides **story generation, quizzes, and text-to-speech (TTS)** powered by the OpenAI API.  
-Originally developed as a graduation research project, it focuses on accessibility for children, including those with developmental or reading difficulties.  
-
-### Features
-- Webcam-based page recognition with YOLOv8  
-- Real-time hand tracking with LightBuzz  
-- Unity integration for rendering 3D characters and animations  
-- Interactive AR feedback (gesture → animation & text)  
-- Backend API with FastAPI for story and quiz data  
-- OpenAI API integration for TTS and dynamic content generation  
-
-### Tech Stack
-- Unity 2022.3  
-- FastAPI (Python)  
-- YOLOv8 (Ultralytics)  
-- LightBuzz Hand Tracking  
-- OpenAI API (TTS, story/quiz generation)  
-
-## Notes
-Parts of this README were drafted with the assistance of OpenAI's ChatGPT to improve clarity and bilingual (English/Japanese) documentation.
+This project provides the **server-side API** for the AR Picture Book application.  
+It is built with **FastAPI**, integrating **YOLOv8** for image analysis and **OpenAI API** for story, quiz, and TTS generation.  
+Unity clients use these APIs to analyze images, generate stories, create quizzes, and compose characters with backgrounds.  
 
 ---
 
 **日本語**  
-このプロジェクトは、子どもの読書への没入を支援する **AR絵本アプリケーション** です。  
-**Unity**、**FastAPI**、**YOLOv8**、さらに **OpenAI API** を組み合わせ、本のページを認識してインタラクティブな3Dコンテンツを重ねて表示します。  
-また、OpenAI API を用いて **ストーリー生成、クイズ作成、音声読み上げ（TTS）** を実現しています。  
-発達障害や読書困難の子どもを含む幅広いユーザーを対象に開発された卒業研究作品です。  
+このプロジェクトは、AR絵本アプリケーションの **サーバーAPI** を提供します。  
+**FastAPI** で構築され、**YOLOv8** による画像解析、**OpenAI API** を利用したストーリー・クイズ・音声生成を統合しています。  
+Unity クライアントは本APIを利用して、画像解析、ストーリー生成、クイズ作成、キャラクターと背景の合成を行います。  
 
-### 特徴
-- YOLOv8 を用いたウェブカメラによるページ認識  
-- LightBuzz を利用したリアルタイム手指トラッキング  
-- Unity での3Dキャラクター・アニメーション表示  
-- ジェスチャー信号によるインタラクティブなARフィードバック  
-- FastAPI によるストーリー・クイズデータのバックエンド連携  
-- OpenAI API によるTTSと動的コンテンツ生成  
+---
 
-### 使用技術
-- Unity 2022.3  
+## API Specification / API 仕様
+
+### **1. `/upload` - Image Upload & Analysis / 画像アップロードと解析**
+Receives an image and analyzes it with YOLOv8. Returns contours, segmented objects, and metadata.  
+
+- **Method:** `POST`  
+- **Request (JSON):**
+  - `image` (String, Base64) - Uploaded image  
+  - `book_id` (int) - Book ID  
+- **Response (JSON):**
+  - `image_num` (int) - Number of images  
+  - `book_id` (int) - Book ID  
+  - `image_with_contour` (String, Base64) - Image with contour applied  
+  - `yolo_images` (dict) - Segmented image list  
+    - `image` (String, Base64) - Individual object image  
+    - `label` (String) - Object label  
+    - `loc` ([int, int]) - Object position (x, y)  
+    - `scale` ([int, int]) - Object size (width, height)  
+
+---
+
+### **2. `/storyMaker` - Story Generation / ストーリー生成**
+Generates a story from an uploaded image and recognized objects. Also returns character details.  
+
+- **Method:** `POST`  
+- **Request (JSON):**
+  - `image` (String, Base64) - Uploaded image  
+  - `book_id` (int) - Book ID  
+- **Response (JSON):**
+  - `story` (String) - Generated story  
+  - `characterInfo` (List[dict]) - Character information  
+    - `id` (int) - Character ID  
+    - `character` (String) - Character name  
+    - `status` (String) - Character status  
+    - `direction` (String) - Direction  
+    - `cloth` (String) - Clothing color  
+
+---
+
+### **3. `/branch` - Image Composition / 画像合成**
+Combines a character and background image into one composite.  
+
+- **Method:** `POST`  
+- **Request (JSON):**
+  - `chara` (String, Base64) - Character image  
+  - `bg` (String, Base64) - Background image  
+  - `charaPosX` (int) - Character X position  
+  - `charaPosY` (int) - Character Y position  
+  - `book_id` (int) - Book ID  
+- **Response (JSON):**
+  - `image` (String, Base64) - Composite image  
+  - `book_id` (int) - Book ID  
+
+---
+
+### **4. `/book_load/{book_id}` - Load Book Info / 本情報の取得**
+Returns stored information about a specific book.  
+
+- **Method:** `GET`  
+- **Response (JSON):**
+  - `Book` (Object) - Book information (pages, characters, attributes, etc.)  
+
+---
+
+### **5. `/random_characters` - Random Character Generation / ランダムキャラクター生成**
+Generates random character images with size metadata.  
+
+- **Method:** `GET`  
+- **200 Success Response (List[JSON], 3 items):**
+  - `image` (String, Base64) - Character image  
+  - `width` (int) - Image width  
+  - `height` (int) - Image height  
+- **400 Bad Request Response (JSON):**
+  - `message` (String) - Error message  
+
+---
+
+### **6. `/stt` - Speech-to-Text / 音声認識**
+Converts story text into audio using OpenAI API.  
+
+- **Method:** `POST`  
+- **Request (Form-Data or JSON):**
+  - `audio` (File, e.g. `.wav` / `.mp3` in Base64 or binary)  
+- **Response (JSON):**
+  - `text` (String) - Recognized text  
+
+---
+
+### **7. `/generate` - Text-to-Image Generation / テキストから画像生成**
+Generates an image based on input text.  
+
+- **Method:** `POST`  
+- **Request (JSON):**
+  - `text` (String) - Input description  
+- **Response (JSON):**
+  - `b64image` (String, Base64) - Generated image  
+
+---
+
+### **8. `/sentence` - Sentence Generation / 文生成**
+Creates a sentence based on given character and action.  
+
+- **Method:** `POST`  
+- **Request (JSON):**
+  - `name` (String) - Character/animal name  
+  - `status` (String) - Action status  
+  - `lang` (int) - Language code (0: Korean, 1: English)  
+  - `level` (int) - Sentence difficulty level  
+- **Response (JSON):**
+  - `sentence` (String) - Generated sentence
+
+---
+
+## Tech Stack / 使用技術
 - FastAPI (Python)  
 - YOLOv8 (Ultralytics)  
-- LightBuzz Hand Tracking  
-- OpenAI API (TTS・ストーリー/クイズ生成)
+- OpenAI API (Story, Quiz, TTS)  
+- Uvicorn (ASGI server runtime)  
 
-## 備考
-本READMEの一部は、説明の明確化および日英二言語対応のために OpenAI の ChatGPT を利用して作成しました。
+---
+
+## Notes / 備考
+Parts of this README were drafted with the assistance of OpenAI's ChatGPT.  
+本READMEの一部は、OpenAI の ChatGPT を利用して作成しました。  
+
+---
 
 ## Trademark Notice
-Unity is a trademark of Unity Technologies.  
-PyTorch is a trademark of Meta AI.  
 YOLOv8 is developed and maintained by Ultralytics.  
 OpenAI is a trademark of OpenAI.  
 Other names or brands may be claimed as the property of others.  
 
-Unity は Unity Technologies の商標です。  
-PyTorch は Meta AI の商標です。  
 YOLOv8 は Ultralytics によって開発・管理されています。  
 OpenAI は OpenAI の商標です。  
 その他の名称やブランドは、各社が所有する場合があります。  
+
